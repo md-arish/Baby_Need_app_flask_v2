@@ -1,0 +1,270 @@
+
+
+{% extends "layout.html" %}
+{% block body %}
+<div  class="intro">
+<br><h2 >Welcome to Baby's Need Application</h2><br>
+</div>
+<br><br>
+
+
+<div id="item_list" class="div"></div>
+<br><br> 
+
+<div id="message_insert" class="div" style="display:none">
+<h2><i>Item Inserted!</i><h2>
+</div>
+
+<div id="message_delete" class="div" style="display:none">
+<h2><i>Item Deleted!</i><h2>
+</div>
+
+<div id="message_update" class="div" style="display:none">
+<h2><i>Item Updated!</i><h2>
+</div>
+
+<div id="show_item" class="div" style="display:none">
+    <br><br>
+    <h2 class="update" style="display:none">Details of the selected Item</h2>
+    <h2 class="insert" style="display:none">Inserting an Item</h2>
+    <label id="lbl_name" for="name"><b>Name of the Item:</b></label>
+    <input id="name" class="text_box" type="text" title="Name cannot be changed" style="margin-left:16px" name="name"  readonly>
+    <br>
+    <br><label id="lbl_qty" for="quantity"><b>Quantity of the Item:</b></label>
+    <input id="quantity" class="text_box" type="number" name="quantity"  min=1 required>
+    <br>
+    <br><label id="lbl_brand" for="brand"><b>Name of the Brand:</b></label>
+    <input id="brand" class="text_box" type="text" style="margin-left:8px" name="brand"  required>
+    <br>
+    <br><label id="lbl_colour" for="colour"><b>Colour of the Item:</b></label>
+    <input id="colour" class="text_box" type="text"  style="margin-left:12px" name="colour"  >
+    <br>
+    <br><label id="lbl_price"  for="price"><b>Price of the Item:</b></label>
+    <input id="price" class="text_box" type="number" style="margin-left:23px" name="price"  min=1 required>
+    <br>
+    <br><label id="lbl_status" class="update" for="status" style="margin-right:35px"><b>Status of the Item:</b></label>
+    <select id="status" class="update" style="margin-left:35px" name="status">
+      <option value="Bought" >Purchased</option>
+      <option value="Not Bought">Not Purchased</option>
+    </select>
+    <br><br><br>
+    <button id="update" style="margin-left:15px;" class="update">Update</button>
+    <button id="delete" style="margin-left:100px;" class="update">Delete</button><br>
+    <button class="insert" id="insert" style="display:none" style="margin-left:50px;">Insert</button><br><br>
+</div><br>        
+
+
+
+<div id="menu" class="div1">     
+    <br><br>       
+    <button id="insert_option" class="button" title="Click to Insert" >Insert an Item</button><br>
+    <button id="items_bought" class="button" title="Click to Display Items Bought">Display Items Bought</button><br>
+    <button id="items_unbought" class="button" title="Click to Display Items To Be Bought">Display Items To Be Bought</button><br>
+    <button id="all_items" class="button" title="Click to Display All Items">Display All Items</button><br>
+    <br><br>
+</div> 
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30=" crossorigin="anonymous"></script>
+<script>
+var names = {{ names | safe }};
+
+
+
+
+$("document").ready(function()
+    {
+        function item_list(item_names)
+        {   
+                $( "#item_list" ).empty();
+                $("#item_list").append("<h2>Items List</h2>");
+                item_names.forEach(app);
+                function app(name) 
+                {
+                    var x ="<button class=" +"item_button" + ">" + name +"</button><br>";
+                    $("#item_list").append(x);
+                }
+                click_event();
+         }
+         item_list(names);
+         
+         
+        function click_event()
+        {
+        $(".item_button").click(function()
+           {
+               var item_name =this.textContent;
+               $(".update").show();
+               $(".insert").hide(); 
+               $("#name").prop("readonly", true);
+               var url = "/select_data?data=" + item_name;
+               var xhttp = new XMLHttpRequest();
+               xhttp.onreadystatechange = function() 
+               {
+                   if (this.readyState == 4 && this.status == 200) 
+                   {
+                       var item = JSON.parse(this.responseText)
+                       $("#show_item").show();
+                       $("#name").val(item.name);
+                       $("#quantity").val(item.quantity);
+                       $("#brand").val(item.brand);
+                       $("#colour").val(item.colour);
+                       $("#price").val(item.price);
+                       if (item.status=="Not Bought")
+                       {
+                           $("#status").val("Not Bought");
+                       }
+                       else
+                       {
+                           $("#status").val("Bought");
+                       }
+                       $("#menu").hide();
+                   }
+               };
+               xhttp.open("GET", url , true);
+               xhttp.send();
+           });
+           }
+
+        
+        
+        $("#update").click(function()
+            {
+                var upname =$("#name").val();
+                var upqty =$("#quantity").val();
+                var upbrand =$("#brand").val();
+                var upcolour =$("#colour").val();
+                var upprice =$("#price").val();
+                var upstatus =$("#status").val();
+                var up_data ={"name":upname,"quantity":upqty,"brand":upbrand,"colour":upcolour,"price":upprice,"status":upstatus};
+                $.ajax(
+                    {
+                        url:"/update",
+                        type:"POST",
+                        data:up_data,
+                        success: function()
+                        {
+                            $("#show_item").hide();
+                            $("#menu").show();
+                            $("#message_update").fadeIn(1000,function()
+                            {
+                                $("#message_update").fadeOut(5000);
+                            });
+                        }
+                    });
+            });
+            
+        $("#delete").click(function()
+            {
+                var del_name =$("#name").val();
+                var url = "/delete?data="+del_name;
+                var xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function() 
+                {
+                    if (this.readyState == 4 && this.status == 200) 
+                    {
+                        $("#show_item").hide();
+                        $("#menu").show();
+                        
+                        for( var i = 0; i < names.length; i++)
+                        { 
+                            if ( names[i] === del_name) 
+                            { 
+                                names.splice(i, 1); 
+                            }
+                        }
+                        item_list(names);
+                        $("#message_delete").fadeIn(1000,function()
+                           {
+                               $("#message_delete").fadeOut(5000);
+                           });
+                    }
+                }
+                xhttp.open("GET", url , true);
+                xhttp.send();
+            });
+                    
+                    
+        $("#insert_option").click(function()
+            {
+                $("#menu").hide();
+                $("#show_item").show();
+                $(".update").hide();
+                $(".insert").show();
+                $(".text_box").val("");
+                $("#name").prop("readonly", false);
+            });     
+
+
+        $("#insert").click(function()
+            {
+                var push_name =$("#name").val();
+                var in_data ={"name":$("#name").val(),"quantity":$("#quantity").val(),"brand":$("#brand").val(),"colour":$("#colour").val(),"price":$("#price").val()};
+                $.ajax(
+                {
+                    url:"/insert",
+                    type:"POST",
+                    data:in_data,
+                    success: function()
+                    {
+                        $("#show_item").hide();
+                        $("#menu").show();
+                        names.push(push_name);
+                        item_list(names);
+                        $("#message_insert").fadeIn(1000,function()
+                           {
+                               $("#message_insert").fadeOut(5000);
+                           });
+                    }
+                });    
+            
+            }); 
+            
+            
+        $("#items_bought").click(function()
+            {
+            var url ="/display_bought";
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() 
+                {
+                    if(this.readyState == 4 && this.status == 200) 
+                    {
+                        var items = JSON.parse(this.responseText);
+                        item_list(items.names);
+                    }
+                }    
+               
+            xhttp.open("GET", url , true);
+            xhttp.send();    
+            });    
+
+        $("#items_unbought").click(function()
+            {
+            var url ="/display_unbought";
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() 
+                {
+                    if(this.readyState == 4 && this.status == 200) 
+                    {
+                        var items = JSON.parse(this.responseText);
+                        item_list(items.names);
+                    }
+                }    
+               
+            xhttp.open("GET", url , true);
+            xhttp.send();    
+            });    
+        $("#all_items").click(function()
+            {
+                item_list(names);
+            });
+    });    
+
+
+
+</script>
+
+{% endblock %}
