@@ -1,0 +1,88 @@
+<!doctype html>
+<html>
+<head>
+<title>Baby's Need Application</title>
+<link href="static/css/stylesheet.css" rel="stylesheet">
+</head>
+<body style="background-color:black;">
+
+<div  class="intro">
+<img src="static/img/baby_PNG.png" style="width:100px;height:150px;">
+<div class="intro">
+<h2><b>Welcome to Baby's Need Application</b></h2>
+</div>
+</div>
+<br><br>
+
+
+<div id="item_list" class="div"></div>
+<br><br> 
+
+<div id="message_insert" class="div" style="display:none">
+<h2><i>Item Inserted!</i><h2>
+</div>
+
+<div id="message_delete" class="div" style="display:none">
+<h2><i>Item Deleted!</i><h2>
+</div>
+
+<div id="message_update" class="div" style="display:none">
+<h2><i>Item Updated!</i><h2>
+</div>
+
+<div id="show_item" class="div" style="display:none">
+    <br><br>
+    <div class="div update" style="display:none">
+    <h2 class="update" style="display:none"><b>Details of the selected Item</b></h2>
+    </div><br>
+    <div class="div insert" style="display:none">
+    <h2 class="insert" style="display:none">Inserting an Item</h2>
+    </div><br>
+    <label id="lbl_name" for="name"><b>Name of the Item:</b></label>
+    <input id="name" class="text_box" type="text" title="Name cannot be changed" style="margin-left:16px" name="name"  readonly>
+    <br>
+    <br><label id="lbl_qty" for="quantity"><b>Quantity of the Item:</b></label>
+    <input id="quantity" class="text_box" type="number" name="quantity"  min=1 required>
+    <br>
+    <br><label id="lbl_brand" for="brand"><b>Name of the Brand:</b></label>
+    <input id="brand" class="text_box" type="text" style="margin-left:8px" name="brand"  required>
+    <br>
+    <br><label id="lbl_colour" for="colour"><b>Colour of the Item:</b></label>
+    <input id="colour" class="text_box" type="text"  style="margin-left:12px" name="colour"  >
+    <br>
+    <br><label id="lbl_price"  for="price"><b>Price of the Item:</b></label>
+    <input id="price" class="text_box" type="number" style="margin-left:23px" name="price"  min=1 required>
+    <br>
+    <br><label id="lbl_status" class="update" for="status" style="margin-right:35px"><b>Status of the Item:</b></label>
+    <select id="status" class="update" style="margin-left:35px" name="status">
+      <option value="Bought" >Purchased</option>
+      <option value="Not Bought">Not Purchased</option>
+    </select>
+    <br><br><br>
+    <button id="update" class="button update" style="margin-left:15px;">Update</button>
+    <button id="delete" class="button update" style="margin-left:100px;">Delete</button><br>
+    <button id="insert" class="button insert" style="display:none" style="margin-left:50px;">Insert</button><br><br>
+</div><br>        
+
+
+
+<div id="menu" class="div1">     
+    <br><br>       
+    <button id="insert_option" class="button" title="Click to Insert" ><b>Insert an Item</b></button><br>
+    <button id="items_bought" class="button" title="Click to Display Items Bought"><b>Display Items Bought</b></button><br>
+    <button id="items_unbought" class="button" title="Click to Display Items To Be Bought"><b>Display Items To Be Bought</b></button><br>
+    <button id="all_items" class="button" title="Click to Display All Items"><b>Display All Items</b></button><br>
+    <br><br>
+</div> 
+
+
+
+
+<script type="text/javascript" src="static/js/lib/jquery.js"></script>
+<script>
+var names = {{ names | safe }};
+</script>
+<script type="text/javascript" src="static/js/main.js"></script>
+
+</body>
+</html>
